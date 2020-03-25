@@ -1,9 +1,10 @@
-package com.example.lotterify
+package com.example.lotterify.main.view
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lotterify.R
 import kotlinx.android.synthetic.main.draw_item.view.*
 
 class DrawsAdapter(private val list: List<Pair<String, String>>) : RecyclerView.Adapter<DrawsAdapter.ViewHolder>(){

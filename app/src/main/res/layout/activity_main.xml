@@ -4,39 +4,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12sp">
+
+    <RelativeLayout
+        android:id="@+id/ll_account_menu"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dm_default_margin"
+        android:layout_marginEnd="@dimen/dm_default_margin">
+
+        <TextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+
+            android:text="@string/txt_balance_number"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/tv_balance_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="end"
+            android:text="@string/txt_balance" />
+
+        <Button
+            android:id="@+id/btn_deposit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="9dp"
+            android:text="@string/txt_deposit"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
     <Button
         android:id="@+id/btnParseHTML"
-        android:layout_width="wrap_content"
+        android:layout_width="81dp"
         android:layout_height="wrap_content"
-        android:text="@string/txt_get_draws"
-        android:layout_marginTop="40dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="150dp"
+        android:text="@string/txt_get_draws" />
+
     <TextView
-        android:id="@+id/textView"
-        android:text="@string/txt_results"
-        android:textSize="12sp"
-        android:textStyle="bold"
+        android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnParseHTML"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:text="@string/txt_results"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_draws"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/tv_status"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dm_default_margin"
         android:layout_marginTop="@dimen/dm_default_margin"
         android:layout_marginEnd="@dimen/dm_default_margin"
-        android:layout_marginStart="@dimen/dm_default_margin"
-        android:layout_marginBottom="@dimen/dm_default_margin"/>
+        android:layout_marginBottom="@dimen/dm_default_margin" />
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Switch" />
 </RelativeLayout>

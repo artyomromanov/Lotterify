@@ -1,4 +1,4 @@
-package com.example.lotterify.view;
+package com.example.lotterify.main.view;
 
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +26,7 @@ public class MainActivityJava extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = findViewById(R.id.textView);
+        textView = findViewById(R.id.tv_status);
         button = findViewById(R.id.btnParseHTML);
 
         button.setOnClickListener(new View.OnClickListener() {

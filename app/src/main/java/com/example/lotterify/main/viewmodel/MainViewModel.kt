@@ -1,4 +1,4 @@
-package com.example.lotterify.viewmodel
+package com.example.lotterify.main.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.LiveData

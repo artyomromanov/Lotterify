@@ -1,4 +1,4 @@
-package com.example.lotterify
+package com.example.lotterify.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,9 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.lotterify.view.MainActivity
+import com.example.lotterify.R
+import com.example.lotterify.util.RC_SIGN_IN
+import com.example.lotterify.main.view.MainActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException

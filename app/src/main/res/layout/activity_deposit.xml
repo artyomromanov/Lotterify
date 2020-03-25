@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.example.lotterify.deposit.DepositActivity">
+
+    <EditText
+        android:id="@+id/et_deposit_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:digits="0123456789."
+        android:hint="@string/txt_enter_deposit_amount"
+        tools:layout_editor_absoluteX="201dp"
+        tools:layout_editor_absoluteY="174dp" />
+    <Button
+        android:id="@+id/btn_pay_p"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_button_pay_p"
+        tools:layout_editor_absoluteX="185dp"
+        tools:layout_editor_absoluteY="304dp" />
+</LinearLayout>
