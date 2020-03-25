@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/holder_layout"
+    app:cardCornerRadius="@dimen/dm_corner_radius"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dm_default_margin"
+    android:layout_marginBottom="@dimen/dm_default_margin"
+    android:elevation="@dimen/dm_default_elevation"
+    android:padding="@dimen/dm_standard_padding"
+    tools:targetApi="lollipop">
+
+    <LinearLayout
+        android:id="@+id/main_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="166dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="3"
+            android:text="@string/txt_search_item_date"
+            android:textSize="@dimen/dm_search_item_txt_size" />
+
+        <TextView
+            android:id="@+id/tv_numbers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="3"
+            android:text="@string/txt_search_item_numbers"
+            android:textSize="@dimen/dm_search_item_txt_size" />
+
+        <TextView
+            android:id="@+id/tv_jackpot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="3"
+            android:text="@string/txt_search_item_jackpot"
+            android:textSize="@dimen/dm_search_item_txt_size" />
+
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
