@@ -6,9 +6,15 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.lotterify.EMAIL_KEY
 import com.example.lotterify.R
-import com.example.lotterify.util.RC_SIGN_IN
+import com.example.lotterify.main.model.UserDataState
+import com.example.lotterify.RC_SIGN_IN
 import com.example.lotterify.main.view.MainActivity
+import com.example.lotterify.main.viewmodel.MainViewModel
+import com.example.lotterify.main.viewmodel.MainViewModelFactory
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -38,6 +44,8 @@ class LoginActivity : AppCompatActivity() {
 
         callbackManager = CallbackManager.Factory.create()
 
+        val model = ViewModelProvider(this, MainViewModelFactory(applicationContext)).get(MainViewModel::class.java)
+
         btn_fb_sign_in.registerCallback(callbackManager, object : FacebookCallback<LoginResult?> {
             override fun onSuccess(loginResult: LoginResult?) {
                 val token = loginResult?.accessToken
@@ -53,14 +61,29 @@ class LoginActivity : AppCompatActivity() {
 
         btn_proceed.setOnClickListener {
             if(signedIn){
-                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                startActivity(intent)
+                googleAccount?.email?.let { model.findUser(it) }
+
             }else{
                 Toast.makeText(this@LoginActivity, getString(R.string.txt_please_sign_in), Toast.LENGTH_SHORT).show()
             }
         }
 
-
+        model.getUserData().observe(this, Observer {
+            when(it){
+                is UserDataState.ERROR -> {
+                    Toast.makeText(this@LoginActivity, "User not initialized, adding new user..", Toast.LENGTH_SHORT).show()
+                    googleAccount?.email?.let { model.addUser(it) }
+                }
+                is UserDataState.EXISTING -> {
+                    Toast.makeText(this@LoginActivity, "Welcome old user ${it.user.username}!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java).apply { putExtra(EMAIL_KEY, it.user.username) })
+                }
+                is UserDataState.NEW -> {
+                    Toast.makeText(this@LoginActivity, "New user created successfully, welcome!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java).apply { putExtra(EMAIL_KEY, it.user.username) })
+                }
+            }
+        })
 
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
@@ -134,11 +157,13 @@ class LoginActivity : AppCompatActivity() {
             updateUI(googleAccount)
             signedIn = true
 
+
         } catch (e: ApiException) { // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             tv_status.text = e.statusCode.toString()
             updateUI(null)
             signedIn = false
+
         }
     }
 }

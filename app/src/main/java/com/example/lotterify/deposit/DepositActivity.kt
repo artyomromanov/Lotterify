@@ -1,15 +1,13 @@
 package com.example.lotterify.deposit
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils.indexOf
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.Fragment
 import com.example.lotterify.R
+import com.example.lotterify.main.view.MainActivity
+import com.example.lotterify.util.SoftKeyboardState
 import kotlinx.android.synthetic.main.activity_deposit.*
-import kotlinx.coroutines.delay
 
 
 class DepositActivity : AppCompatActivity() {
@@ -29,29 +27,25 @@ class DepositActivity : AppCompatActivity() {
                 }
             }
             if (amount.contains('.')) {
-                if (amount.indexOf('.') == 0 || count > 1 || amount.length - amount.indexOf('.') > 3 ) stopEntry()
+                if (amount.indexOf('.') == 0 || count > 1 || amount.length - amount.indexOf('.') > 3 ) {
+                    stopEntry()
+                }
+                if(amount.length - amount.indexOf('.') > 2 ){
+                    SoftKeyboardState.HIDE(this)
+                }else{
+                    SoftKeyboardState.SHOW(this)
+                }
             }
         }
 
         btn_pay_p.setOnClickListener {
-
-
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
-
     private fun stopEntry() {
         with(et_deposit_amount) {
             setText(et_deposit_amount.text.dropLast(1))
             setSelection(et_deposit_amount.text.length);
-        }
-    }
-
-    private fun hideSoftKeyboard(fragment: Fragment) {
-
-        val view = fragment.activity?.currentFocus
-        if (view != null) {
-            val inputManager: InputMethodManager = fragment.activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputManager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

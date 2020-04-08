@@ -5,9 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lotterify.R
+import com.example.lotterify.network.DrawResult
 import kotlinx.android.synthetic.main.draw_item.view.*
 
-class DrawsAdapter(private val list: List<Pair<String, String>>) : RecyclerView.Adapter<DrawsAdapter.ViewHolder>(){
+class DrawsAdapter(private val list: List<DrawResult>) : RecyclerView.Adapter<DrawsAdapter.ViewHolder>(){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,8 +29,8 @@ class DrawsAdapter(private val list: List<Pair<String, String>>) : RecyclerView.
     inner class ViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
         fun bind(position: Int){
-            itemView.tv_date.text = list[position].first
-            itemView.tv_numbers.text = list[position].second
+            itemView.tv_date.text = list[position].date
+            itemView.tv_numbers.text = list[position].numbers
         }
     }
 }
