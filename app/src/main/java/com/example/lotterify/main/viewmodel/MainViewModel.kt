@@ -4,47 +4,72 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import org.jsoup.Jsoup
+import androidx.lifecycle.viewModelScope
+import com.example.lotterify.INITIAL_BALANCE
+import com.example.lotterify.database.User
+import com.example.lotterify.database.UserDataRepository
+import com.example.lotterify.database.UserDataRepositoryImpl
+import com.example.lotterify.database.UsersDatabase
+import com.example.lotterify.error.DrawsError
+import com.example.lotterify.error.UserDatabaseError
+import com.example.lotterify.main.model.*
+import com.example.lotterify.network.RepositoryEuroMillions
+import com.example.lotterify.network.RepositoryEuroMillionsImpl
+import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.launch
 
 
 class MainViewModel(context: Context) : ViewModel() {
 
-    private val handler = android.os.Handler(context.mainLooper)
+    private val euroRepository: RepositoryEuroMillions = RepositoryEuroMillionsImpl()
+    private val userDataRepository : UserDataRepository = UserDataRepositoryImpl(UsersDatabase.getInstance(context))
 
-    private val resultData = MutableLiveData<List<Pair<String, String>>>()
-    fun getResultsData() = resultData as LiveData<List<Pair<String,String>>>
+    private val compositeDisposable = CompositeDisposable()
+
+    private val resultData = MutableLiveData<LoadingDrawsState>()
+    private val userData = MutableLiveData<UserDataState>()
+
+    fun getResultsData() = resultData as LiveData<LoadingDrawsState>
+    fun getUserData() = userData as LiveData<UserDataState>
 
     fun fetchNumbers() {
-
-            Thread(Runnable {
-
-                val datesStringBuilder = StringBuilder()
-
-                val drawsList = mutableListOf<Pair<String, String>>()
+        resultData.value = LoadingDrawsState.IN_PROGRESS
+        viewModelScope.launch {
                 try {
-                    val doc = Jsoup.connect("https://www.national-lottery.co.uk/results/euromillions/draw-history").get()
-
-                    val dates = doc.select("li[class=\"table_cell table_cell_1 table_cell_first\"]")
-                    val numbers = doc.select("li[class=\"table_cell table_cell_3\"]")
-                    val luckyStarz = doc.select("li[class=\"table_cell table_cell_4\"]")
-                    for (i in 1..dates.size) {
-                        datesStringBuilder.append("\n").append(dates[i].text())
-                        drawsList.add(dates[i].text() to numbers[i].text())
-                    }
-
-                } catch (e: Exception) {
-                    datesStringBuilder.append("Error : ").append(e.message).append("\n")
+                    val result = euroRepository.fetchNumbers()
+                    resultData.value = LoadingDrawsState.SUCCESS(result)
+                } catch (error: DrawsError){
+                    resultData.value = LoadingDrawsState.ERROR(error)
+                } finally {
+                    //logic for completed loading
                 }
-
-                handler.post {
-                    resultData.value = drawsList
-                }
-            }).start()
         }
-}
+    }
 
-//li[class="table_cell table_cell_3"],li[class="table_cell table_cell_1 table_cell_first"]
-//span[hello="Cleveland"][goodbye="Columbus"]
-//
-//span.table_cell_block
-//	div a
+    fun findUser(email : String){
+        userData.value = UserDataState.LOADING
+
+        compositeDisposable.add(
+            userDataRepository
+                .getUser(email)
+                .subscribe (
+                    {userData.value = UserDataState.EXISTING(it)},
+                    {userData.value = UserDataState.ERROR(UserDatabaseError(it.message ?: "Unknown Error", it.cause))
+                })
+        )
+    }
+
+    fun addUser(email : String){
+        userData.value = UserDataState.LOADING
+        val newUser = User(email, INITIAL_BALANCE)
+        compositeDisposable.add(
+            userDataRepository
+                .addUser(newUser)
+                .subscribe({
+                    userData.value = UserDataState.NEW(newUser)
+                },{
+                    userData.value = UserDataState.ERROR(it)
+                })
+        )
+    }
+}

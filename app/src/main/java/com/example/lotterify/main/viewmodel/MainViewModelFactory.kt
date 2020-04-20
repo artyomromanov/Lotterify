@@ -10,6 +10,4 @@ class MainViewModelFactory(private val context : Context) : ViewModelProvider.Fa
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return MainViewModel(context) as T
     }
-
-
 }
