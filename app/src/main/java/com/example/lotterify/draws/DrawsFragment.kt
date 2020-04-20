@@ -1,36 +1,43 @@
-package com.example.lotterify.main.view
+package com.example.lotterify.draws
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.lotterify.EMAIL_KEY
 import com.example.lotterify.R
-import com.example.lotterify.deposit.DepositActivity
 import com.example.lotterify.main.model.LoadingDrawsState
 import com.example.lotterify.main.model.UserDataState
+import com.example.lotterify.main.view.DrawsAdapter
 import com.example.lotterify.main.viewmodel.MainViewModel
 import com.example.lotterify.main.viewmodel.MainViewModelFactory
-import com.example.lotterify.EMAIL_KEY
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.draws_fragment.*
 
-class MainActivity : AppCompatActivity() {
+class DrawsFragment : Fragment() {
 
     private lateinit var signedInEmail: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        supportActionBar?.hide()
+        return inflater.inflate(R.layout.login_fragment, container, false)
 
-        val model = ViewModelProvider(this, MainViewModelFactory(applicationContext)).get(MainViewModel::class.java)
-        val layoutManager = LinearLayoutManager(this)
+    }
 
-        signedInEmail = intent?.getStringExtra(EMAIL_KEY) ?: "unknown user"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (activity?.parent as AppCompatActivity).let { it.supportActionBar?.hide() }
+
+        val model = ViewModelProvider(this, MainViewModelFactory(activity!!.applicationContext)).get(MainViewModel::class.java)
+        val layoutManager = LinearLayoutManager(context)
+
+        signedInEmail = activity!!.parent.intent?.getStringExtra(EMAIL_KEY) ?: "unknown user"
         tv_email.text = signedInEmail
 
         model.findUser(signedInEmail)
@@ -41,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             model.fetchNumbers()
         }
 
-        model.getResultsData().observe(this, Observer {
+        model.getResultsData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is LoadingDrawsState.IN_PROGRESS -> showProgress(true)
                 is LoadingDrawsState.SUCCESS -> {
@@ -53,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        model.getUserData().observe(this, Observer {
+        model.getUserData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is UserDataState.LOADING -> {
                 }
@@ -73,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         btn_deposit.setOnClickListener {
-            startActivity(Intent(this@MainActivity, DepositActivity::class.java))
+            //
         }
     }
 
@@ -82,3 +89,4 @@ class MainActivity : AppCompatActivity() {
         rv_draws.visibility = if (show) View.GONE else View.VISIBLE
     }
 }
+
