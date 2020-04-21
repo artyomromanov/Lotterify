@@ -26,4 +26,6 @@
     <dimen name="dm_search_image_height">90dp</dimen>
     <dimen name="dm_shaker_rv_height">400dp</dimen>
     <dimen name="txt_text_size_22">22sp</dimen>
+    <dimen name="dm_login_image">100dp</dimen>
+    <dimen name="dm_login_status_margin">40dp</dimen>
 </resources>

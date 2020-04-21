@@ -13,21 +13,22 @@ import com.example.lotterify.database.UsersDatabase
 import com.example.lotterify.error.DrawsError
 import com.example.lotterify.error.UserDatabaseError
 import com.example.lotterify.main.model.*
-import com.example.lotterify.network.RepositoryEuroMillions
+import com.example.lotterify.network.DrawsRepository
 import com.example.lotterify.network.RepositoryEuroMillionsImpl
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 
 
-class MainViewModel(context: Context) : ViewModel() {
+class MainViewModel(private val drawsRepository: DrawsRepository, private val userDataRepository: UserDataRepository) : ViewModel() {
 
-    private val euroRepository: RepositoryEuroMillions = RepositoryEuroMillionsImpl()
-    private val userDataRepository : UserDataRepository = UserDataRepositoryImpl(UsersDatabase.getInstance(context))
+    private val euroRepository: DrawsRepository = RepositoryEuroMillionsImpl()
 
     private val compositeDisposable = CompositeDisposable()
 
     private val resultData = MutableLiveData<LoadingDrawsState>()
     private val userData = MutableLiveData<UserDataState>()
+
+    var signedInUser : String? = null
 
     fun getResultsData() = resultData as LiveData<LoadingDrawsState>
     fun getUserData() = userData as LiveData<UserDataState>

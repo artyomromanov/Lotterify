@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.example.lotterify.deposit.DepositActivity">
+    tools:context="com.example.lotterify.fragmentDeposit.DepositActivity">
 
     <EditText
         android:id="@+id/et_deposit_amount"

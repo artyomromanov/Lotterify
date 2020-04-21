@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
-class RepositoryEuroMillionsImpl : RepositoryEuroMillions {
+class RepositoryEuroMillionsImpl : DrawsRepository {
 
     override suspend fun fetchNumbers() : List<EuroMillionsDrawResult> {
 

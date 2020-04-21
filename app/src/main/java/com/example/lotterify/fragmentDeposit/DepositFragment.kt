@@ -1,4 +1,4 @@
-package com.example.lotterify.deposit
+package com.example.lotterify.fragmentDeposit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +8,16 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.lotterify.R
+import com.example.lotterify.di.components.DaggerAppComponent
+import com.example.lotterify.di.components.DaggerViewModelComponent
 import com.example.lotterify.main.viewmodel.MainViewModel
 import com.example.lotterify.main.viewmodel.MainViewModelFactory
+import com.example.lotterify.util.LotterifyApplication
 import com.example.lotterify.util.SoftKeyboardState
 import kotlinx.android.synthetic.main.deposit_fragment.*
+import javax.inject.Inject
 
-class DepositFragment : Fragment() {
+class DepositFragment(private val model : MainViewModel) : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.deposit_fragment, container, false)
@@ -21,8 +25,6 @@ class DepositFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val model = ViewModelProvider(this, MainViewModelFactory(context!!)).get(MainViewModel::class.java)
 
         //model.findUser()
 

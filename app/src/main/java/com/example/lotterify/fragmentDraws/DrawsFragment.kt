@@ -1,46 +1,43 @@
-package com.example.lotterify.draws
+package com.example.lotterify.fragmentDraws
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.lotterify.EMAIL_KEY
 import com.example.lotterify.R
+import com.example.lotterify.di.components.DaggerViewModelComponent
 import com.example.lotterify.main.model.LoadingDrawsState
-import com.example.lotterify.main.model.UserDataState
 import com.example.lotterify.main.view.DrawsAdapter
 import com.example.lotterify.main.viewmodel.MainViewModel
 import com.example.lotterify.main.viewmodel.MainViewModelFactory
+import com.example.lotterify.util.LotterifyApplication
 import kotlinx.android.synthetic.main.draws_fragment.*
+import javax.inject.Inject
 
-class DrawsFragment : Fragment() {
+class DrawsFragment(private val model : MainViewModel) : Fragment() {
 
-    private lateinit var signedInEmail: String
+    private var signedInUser : String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(R.layout.login_fragment, container, false)
+        return inflater.inflate(R.layout.draws_fragment, container, false)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity?.parent as AppCompatActivity).let { it.supportActionBar?.hide() }
-
-        val model = ViewModelProvider(this, MainViewModelFactory(activity!!.applicationContext)).get(MainViewModel::class.java)
         val layoutManager = LinearLayoutManager(context)
 
-        signedInEmail = activity!!.parent.intent?.getStringExtra(EMAIL_KEY) ?: "unknown user"
-        tv_email.text = signedInEmail
+        signedInUser = model.signedInUser
 
-        model.findUser(signedInEmail)
+        tv_email.text = signedInUser ?: "Not signed in"
+
+        //if(signedInUser != null) model.findUser(signedInUser)
 
         rv_draws.layoutManager = layoutManager
 
@@ -60,7 +57,7 @@ class DrawsFragment : Fragment() {
             }
         })
 
-        model.getUserData().observe(viewLifecycleOwner, Observer {
+        /*model.getUserData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is UserDataState.LOADING -> {
                 }
@@ -78,7 +75,7 @@ class DrawsFragment : Fragment() {
                 }
             }
         })
-
+*/
         btn_deposit.setOnClickListener {
             //
         }

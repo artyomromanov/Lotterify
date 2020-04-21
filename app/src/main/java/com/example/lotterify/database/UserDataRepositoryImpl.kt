@@ -1,14 +1,12 @@
 package com.example.lotterify.database
 
-import com.example.lotterify.database.User
-import com.example.lotterify.database.UserDataRepository
-import com.example.lotterify.database.UsersDatabase
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class UserDataRepositoryImpl(private val database : UsersDatabase) : UserDataRepository {
+class UserDataRepositoryImpl @Inject constructor(private val database : UsersDatabase) : UserDataRepository {
 
     override fun addUser(user: User): Completable {
         return database
