@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_create_account_message"
+        android:textAlignment="center"
+        android:layout_marginBottom="@dimen/dm_login_status_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/please_create" />
+
+    <TextView
+        android:id="@+id/tv_create_account_status"
+        android:textAlignment="center"
+        android:layout_marginBottom="@dimen/dm_login_status_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/iv_create_account_avatar"
+        android:layout_width="@dimen/dm_login_image"
+        android:layout_height="@dimen/dm_login_image"
+        android:contentDescription="@string/txt_image_content_desc"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
+
+    <TextView
+        android:id="@+id/tv_sign_out"
+        android:textAlignment="center"
+        android:layout_marginBottom="@dimen/dm_login_status_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_status" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_create_account_sign_out"
+        android:layout_marginTop="@dimen/dm_nav_bar_height"
+        android:layout_width="200dp"
+        android:layout_height="71dp"/>
+
+</LinearLayout>

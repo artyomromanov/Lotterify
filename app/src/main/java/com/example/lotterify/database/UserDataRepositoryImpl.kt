@@ -24,7 +24,15 @@ class UserDataRepositoryImpl @Inject constructor(private val database : UsersDat
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun getUser(user: String): Single<User> {
+    override fun removeAllUsers(): Completable {
+        return database
+            .getUsersDao()
+            .removeAllUsers()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun findUser(user: String): Single<User> {
         return database
             .getUsersDao()
             .getUser(user)

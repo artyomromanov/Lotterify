@@ -9,6 +9,8 @@ interface UserDataRepository {
 
     fun removeUser(user: User) : Completable
 
-    fun getUser(user: String) : Single<User>
+    fun removeAllUsers() : Completable
+
+    fun findUser(user: String) : Single<User>
 
 }

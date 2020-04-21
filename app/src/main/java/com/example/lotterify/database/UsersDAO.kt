@@ -16,4 +16,8 @@ interface UsersDAO {
     @Delete
     fun removeUser(user: User) : Completable
 
+    //test purposes only
+    @Query("DELETE FROM users")
+    fun removeAllUsers() : Completable
+
 }

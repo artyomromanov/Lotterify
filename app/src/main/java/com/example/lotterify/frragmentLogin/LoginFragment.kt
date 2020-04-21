@@ -2,23 +2,20 @@ package com.example.lotterify.frragmentLogin
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import com.example.lotterify.CMD_SIGN_OUT
 import com.example.lotterify.R
 import com.example.lotterify.RC_SIGN_IN
-import com.example.lotterify.di.components.DaggerViewModelComponent
 import com.example.lotterify.main.model.UserDataState
 import com.example.lotterify.main.viewmodel.MainViewModel
-import com.example.lotterify.main.viewmodel.MainViewModelFactory
-import com.example.lotterify.util.LotterifyApplication
+import com.example.lotterify.main.viewmodel.UIState
+import com.example.lotterify.util.toast
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -28,17 +25,21 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.login_fragment.*
+import kotlinx.android.synthetic.main.login_fragment.tv_status
 import kotlinx.android.synthetic.main.main_activity.*
-import javax.inject.Inject
 
 class LoginFragment (private val model : MainViewModel) : Fragment() {
 
+
+    //Google sign in stuff
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var googleSignInOptions: GoogleSignInOptions
     private lateinit var tvGoogleButtonText: TextView
     private lateinit var callbackManager: CallbackManager
 
     private var googleAccount: GoogleSignInAccount? = null
+
+    //Boolean showing if signed in with anything
     private var signedIn = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -49,6 +50,9 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ///Starts with a clean slate
+        model.removeAllUsersTESTONLY()
 
         callbackManager = CallbackManager.Factory.create()
         googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -72,19 +76,32 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
             }
         }
 
+        //Continue to check the DB for the users credentials
+        btn_login_continue.setOnClickListener {
+            //model.setUIState(UIState.ACCOUNT_CREATION)
+            googleAccount?.email?.let { model.findUser(it) } ?: context?.toast("No email associated with this account")
+        }
+
         model.getUserData().observe(viewLifecycleOwner, Observer {
             when (it) {
-                is UserDataState.ERROR -> {
-                    Toast.makeText(context, "User not initialized, adding new user..", Toast.LENGTH_SHORT).show()
-                    //googleAccount?.email?.let { model.addUser(it) }
+                is UserDataState.LOADING -> {
+                    showProgress()
+                }
+                is UserDataState.NOTFOUND -> {
+                    showProgress(false)
+                    model.setUIState(UIState.ACCOUNT_CREATION)
                 }
                 is UserDataState.EXISTING -> {
-                    Toast.makeText(context, "Welcome old user ${it.user.username}!", Toast.LENGTH_SHORT).show()
-                    //startActivity(Intent(context, MainActivity2::class.java).apply { putExtra(EMAIL_KEY, it.user.username) })
+                    showProgress(false)
+                    context?.toast("Welcome old user ${it.user.username}!")
                 }
-                is UserDataState.NEW -> {
-                    Toast.makeText(context, "New user created successfully, welcome!", Toast.LENGTH_SHORT).show()
-                    //startActivity(Intent(context, MainActivity2::class.java).apply { putExtra(EMAIL_KEY, it.user.username) })
+                is UserDataState.DELETED -> {
+                    showProgress(false)
+                    context?.toast(it.message)
+                }
+                is UserDataState.ERROR -> {
+                    showProgress(false)
+                    context?.toast("${it.error.message}")
                 }
             }
         })
@@ -93,8 +110,12 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        signedIn = googleAccount != null
-        updateUI(googleAccount)
+        if(model.signedInUser != CMD_SIGN_OUT) {
+            signedIn = googleAccount != null
+            updateUI(googleAccount)
+        }else{
+            updateUI(null)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -111,18 +132,23 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
 
     private fun updateUI(account: GoogleSignInAccount?) {
         if (account != null) {
-            val text = getString(R.string.txt_signed_in_user) + account.displayName
 
-            model.signedInUser = account.email //save the signed in user into the VM
+            //Save the signed in user into the VM
+            model.signedInUser = account.email
+
+            //UI Changes
+            val text = getString(R.string.txt_signed_in_user) + account.displayName
             tv_status.text = text
             Picasso.get().load(googleAccount?.photoUrl).into(iv_avatar)
             tvGoogleButtonText.text = getString(R.string.txt_sign_out)
-            enableTabs(true)
+            btn_login_continue.visibility = View.VISIBLE
+
         } else {
+            //UI Changes
             tv_status.text = getString(R.string.txt_not_signed_in)
-            tvGoogleButtonText.text = getString(R.string.txt_sign_in)
             iv_avatar.setImageResource(R.drawable.not_signed_in)
-            enableTabs(false)
+            tvGoogleButtonText.text = getString(R.string.txt_sign_in)
+            btn_login_continue.visibility = View.GONE
         }
     }
 
@@ -134,21 +160,25 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
     private fun googleSignOut() {
         googleSignInClient.signOut()
             .addOnCompleteListener {
-                Toast.makeText(activity, getString(R.string.txt_signed_out_user) + googleAccount?.displayName, Toast.LENGTH_SHORT).show()
+
+                context?.toast(getString(R.string.txt_signed_out_user) + googleAccount?.displayName)
+
                 googleAccount = null
                 updateUI(googleAccount)
+
             }
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+
         try {
+
             googleAccount = completedTask.getResult(ApiException::class.java)
             updateUI(googleAccount)
             signedIn = true
 
+        } catch (e: ApiException) {
 
-        } catch (e: ApiException) { // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             tv_status.text = e.statusCode.toString()
             updateUI(null)
             signedIn = false
@@ -163,5 +193,8 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
                 item.isEnabled = enable
             }
         }
+    }
+    private fun showProgress(show : Boolean = true){
+        with(pb_login_progress){visibility = if (show) View.VISIBLE else View.GONE }
     }
 }

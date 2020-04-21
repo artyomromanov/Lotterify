@@ -38,7 +38,7 @@
 
     <string name="txt_not_signed_in">Not signed in</string>
     <string name="txt_success">Successfully logged in user</string>
-    <string name="txt_signed_in_user">Signed in user:\u0020</string>
+    <string name="txt_signed_in_user">Signed in google account:\u0020</string>
     <string name="txt_image_content_desc">user_avatar</string>
     <string name="txt_sign_out">Sign out</string>
     <string name="txt_sign_in">Sign in</string>
@@ -54,4 +54,6 @@
     <string name="txt_button_pay_p">Pay P</string>
     <string name="txt_enter_deposit_amount">Enter deposit amount</string>
     <string name="txt_email">email</string>
+    <string name="please_create">Please take a few seconds to create a Lotterify account...</string>
+    <string name="txt_continue">CONTINUE</string>
 </resources>
