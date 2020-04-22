@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.lotterify.INITIAL_BALANCE
 import com.example.lotterify.database.User
 import com.example.lotterify.database.UserDataRepository
 import com.example.lotterify.error.DrawsError
@@ -13,6 +12,7 @@ import com.example.lotterify.main.model.LoadingDrawsState
 import com.example.lotterify.main.model.UserDataState
 import com.example.lotterify.network.DrawsRepository
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -25,7 +25,8 @@ class MainViewModel(private val drawsRepository: DrawsRepository, private val us
     private val UIState = MutableLiveData<UIState>()
 
     //Currently signed in user in Accounts section.
-    var signedInUser: String? = null
+    var signedInOAuthUser: String? = null
+    var signedInLotterifyUser: User? = null
 
     fun getResultsData() = resultData as LiveData<LoadingDrawsState>
     fun getUserData() = userData as LiveData<UserDataState>
@@ -48,42 +49,45 @@ class MainViewModel(private val drawsRepository: DrawsRepository, private val us
     }
 
     fun findUser(email: String) {
-        userData.value = UserDataState.LOADING
+        userData.value = UserDataState.Loading
+        viewModelScope.launch {
+            delay(1000)
+            compositeDisposable.add(
+                userDataRepository
+                    .findUser(email)
+                    .subscribe(
+                        { userData.value = UserDataState.Existing(it) }, //Success
+                        {
+                            if (it.message!!.contains("empty result")) { //Empty query - user not found
+                                userData.value = UserDataState.NotFound
+                            } else {
+                                userData.value = UserDataState.Error(UserDatabaseError(it.message ?: "Unknown Error", it.cause)) //Error of some other kind
+                            }
+                        })
+            )
+        }
+    }
 
-        compositeDisposable.add(
-            userDataRepository
-                .findUser(email)
-                .subscribe(
-                    { userData.value = UserDataState.EXISTING(it) }, //Success
-                    {
-                        if (it.message!!.contains("empty result")) { //Empty query - user not found
-                            userData.value = UserDataState.NOTFOUND
-                        } else {
-                            userData.value = UserDataState.ERROR(UserDatabaseError(it.message ?: "Unknown Error", it.cause)) //Error of some other kind
-                        }
+    fun addUser(user: User) {
+        userData.value = UserDataState.Loading
+        viewModelScope.launch {
+            delay(1000)
+            compositeDisposable.add(
+                userDataRepository
+                    .addUser(user)
+                    .subscribe({
+                        userData.value = UserDataState.New(user)
+                    },{
+                        userData.value = UserDataState.Error(it)
                     })
-        )
+            )
+        }
     }
-
-    fun addUser(email: String) {
-        userData.value = UserDataState.LOADING
-        val newUser = User(email, INITIAL_BALANCE)
-        compositeDisposable.add(
-            userDataRepository
-                .addUser(newUser)
-                .subscribe({
-                    userData.value = UserDataState.NEW(newUser)
-                }, {
-                    userData.value = UserDataState.ERROR(it)
-                })
-        )
-    }
-
     fun removeAllUsersTESTONLY() {
         compositeDisposable.add(
             userDataRepository
                 .removeAllUsers()
-                .subscribe({ userData.value = UserDataState.DELETED("Deleted all!") }, { error -> userData.value = UserDataState.ERROR(error) })
+                .subscribe({ userData.value = UserDataState.Deleted("Deleted all!") }, { error -> userData.value = UserDataState.Error(error) })
         )
     }
 

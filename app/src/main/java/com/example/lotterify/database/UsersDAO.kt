@@ -7,7 +7,7 @@ import io.reactivex.Single
 @Dao
 interface UsersDAO {
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addUser(user: User) : Completable
 
     @Query("SELECT * FROM users WHERE username = :user")

@@ -5,12 +5,12 @@ import io.reactivex.Single
 
 interface UserDataRepository {
 
-    fun addUser(user : User) : Completable
+    suspend fun addUser(user : User) : Completable
 
     fun removeUser(user: User) : Completable
 
     fun removeAllUsers() : Completable
 
-    fun findUser(user: String) : Single<User>
+    suspend fun findUser(user: String) : Single<User>
 
 }

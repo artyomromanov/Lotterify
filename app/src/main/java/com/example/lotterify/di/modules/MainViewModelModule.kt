@@ -1,12 +1,10 @@
 package com.example.lotterify.di.modules
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.lotterify.database.UserDataRepository
 import com.example.lotterify.database.UserDataRepositoryImpl
 import com.example.lotterify.database.UsersDatabase
-import com.example.lotterify.frragmentLogin.LoginFragment
-import com.example.lotterify.main.view.MainActivity
+import com.example.lotterify.MainActivity
 import com.example.lotterify.main.viewmodel.MainViewModel
 import com.example.lotterify.main.viewmodel.MainViewModelFactory
 import com.example.lotterify.network.DrawsRepository

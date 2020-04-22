@@ -6,10 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.example.lotterify.CMD_SIGN_OUT
 import com.example.lotterify.R
 import com.example.lotterify.RC_SIGN_IN
 import com.example.lotterify.main.model.UserDataState
@@ -25,10 +23,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.login_fragment.*
-import kotlinx.android.synthetic.main.login_fragment.tv_status
-import kotlinx.android.synthetic.main.main_activity.*
 
-class LoginFragment (private val model : MainViewModel) : Fragment() {
+class LoginFragment(private val model: MainViewModel) : Fragment() {
 
 
     //Google sign in stuff
@@ -76,30 +72,30 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
             }
         }
 
-        //Continue to check the DB for the users credentials
-        btn_login_continue.setOnClickListener {
-            //model.setUIState(UIState.ACCOUNT_CREATION)
-            googleAccount?.email?.let { model.findUser(it) } ?: context?.toast("No email associated with this account")
-        }
-
         model.getUserData().observe(viewLifecycleOwner, Observer {
             when (it) {
-                is UserDataState.LOADING -> {
+                is UserDataState.Loading -> {
                     showProgress()
                 }
-                is UserDataState.NOTFOUND -> {
+                is UserDataState.NotFound -> {
                     showProgress(false)
-                    model.setUIState(UIState.ACCOUNT_CREATION)
+                    model.setUIState(UIState.ACCOUNT_CREATION_USERNAME)
                 }
-                is UserDataState.EXISTING -> {
+                is UserDataState.Existing -> {
                     showProgress(false)
+                    model.setUIState(UIState.OAUTH_SIGNED_IN)
                     context?.toast("Welcome old user ${it.user.username}!")
                 }
-                is UserDataState.DELETED -> {
+                is UserDataState.New -> {
+                    showProgress(false)
+                    model.setUIState(UIState.OAUTH_SIGNED_IN)
+                    model.signedInLotterifyUser = it.user
+                }
+                is UserDataState.Deleted -> {
                     showProgress(false)
                     context?.toast(it.message)
                 }
-                is UserDataState.ERROR -> {
+                is UserDataState.Error -> {
                     showProgress(false)
                     context?.toast("${it.error.message}")
                 }
@@ -110,20 +106,12 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if(model.signedInUser != CMD_SIGN_OUT) {
-            signedIn = googleAccount != null
-            updateUI(googleAccount)
-        }else{
-            updateUI(null)
-        }
+        if (googleAccount != null)
+            signedIn = true
+        updateUI(googleAccount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        //Facebook
-        super.onActivityResult(requestCode, resultCode, data)
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-
         //Google
         if (requestCode == RC_SIGN_IN) {
             handleSignInResult(GoogleSignIn.getSignedInAccountFromIntent(data))
@@ -134,21 +122,25 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
         if (account != null) {
 
             //Save the signed in user into the VM
-            model.signedInUser = account.email
+            model.signedInOAuthUser = account.email
+
+            //Continue to check the DB for the users credentials
+            googleAccount?.email?.let { model.findUser(it) } ?: context?.toast("No email associated with this account")
 
             //UI Changes
             val text = getString(R.string.txt_signed_in_user) + account.displayName
             tv_status.text = text
             Picasso.get().load(googleAccount?.photoUrl).into(iv_avatar)
             tvGoogleButtonText.text = getString(R.string.txt_sign_out)
-            btn_login_continue.visibility = View.VISIBLE
 
         } else {
+            //State change
+            model.setUIState(UIState.OAUTH_NOT_SIGNED_IN)
+
             //UI Changes
             tv_status.text = getString(R.string.txt_not_signed_in)
             iv_avatar.setImageResource(R.drawable.not_signed_in)
             tvGoogleButtonText.text = getString(R.string.txt_sign_in)
-            btn_login_continue.visibility = View.GONE
         }
     }
 
@@ -164,7 +156,7 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
                 context?.toast(getString(R.string.txt_signed_out_user) + googleAccount?.displayName)
 
                 googleAccount = null
-                updateUI(googleAccount)
+                updateUI(null)
 
             }
     }
@@ -186,15 +178,7 @@ class LoginFragment (private val model : MainViewModel) : Fragment() {
         }
     }
 
-    private fun enableTabs(enable: Boolean) {
-
-        activity?.bottom_navigation?.menu?.let {
-            for (item in it.children) {
-                item.isEnabled = enable
-            }
-        }
-    }
-    private fun showProgress(show : Boolean = true){
-        with(pb_login_progress){visibility = if (show) View.VISIBLE else View.GONE }
+    private fun showProgress(show: Boolean = true) {
+        with(pb_login_progress) { visibility = if (show) View.VISIBLE else View.INVISIBLE }
     }
 }

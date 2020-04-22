@@ -3,10 +3,10 @@ package com.example.lotterify.main.model
 import com.example.lotterify.database.User
 
 sealed class UserDataState {
-    data class EXISTING(val user : User) : UserDataState()
-    data class NEW(val user: User) : UserDataState()
-    data class DELETED(val message : String) : UserDataState()
-    data class ERROR(val error : Throwable) : UserDataState()
-    object NOTFOUND : UserDataState()
-    object LOADING : UserDataState()
+    object Loading : UserDataState()
+    object NotFound : UserDataState()
+    data class Existing(val user : User) : UserDataState()
+    data class New(val user: User) : UserDataState()
+    data class Deleted(val message : String) : UserDataState()
+    data class Error(val error : Throwable) : UserDataState()
 }

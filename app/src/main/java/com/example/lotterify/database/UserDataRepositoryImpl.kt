@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class UserDataRepositoryImpl @Inject constructor(private val database : UsersDatabase) : UserDataRepository {
 
-    override fun addUser(user: User): Completable {
+    override suspend fun addUser(user: User): Completable {
         return database
             .getUsersDao()
             .addUser(user)
@@ -32,7 +32,7 @@ class UserDataRepositoryImpl @Inject constructor(private val database : UsersDat
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun findUser(user: String): Single<User> {
+    override suspend fun findUser(user: String): Single<User> {
         return database
             .getUsersDao()
             .getUser(user)

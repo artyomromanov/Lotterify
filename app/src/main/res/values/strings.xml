@@ -4,24 +4,7 @@
     <string name="txt_menu_item_account">Account</string>
     <string name="txt_menu_item_draws">Draws</string>
     <string name="txt_menu_item_deposit">Deposit</string>
-    <string name="txt_search_item_name">Name</string>
-    <string name="txt_search_item_description">Description</string>
-    <string name="txt_search_error">Error</string>
-    <string name="txt_search_btn_retry">RETRY</string>
-    <string name="txt_search_sw_query_hint">Search all cocktails…</string>
-    <string name="txt_search_empty_error">Please enter something into the search field</string>
-    <string name="txt_search_suggestion_item">Suggestion</string>
-    <string name="txt_search_no_suggestions"><![CDATA[<…no current suggestions…>]]></string>
-    <string name="txt_search_recent_searches">Recently searched for…</string>
-    <string name="txt_search_content_description">thumbnails</string>
-    <string name="txt_search_btn_add">ADD</string>
-    <string name="txt_favourites_my_favourite_cocktails">My Favourite Cocktails</string>
-    <string name="txt_favourites_tip_content">All your favourite cocktails are stored here. Try the shaker, to learn them!</string>
-    <string name="txt_favourites_tv_description">Description</string>
-    <string name="txt_favourites_saved_success">Successfully saved as favourite!</string>
-    <string name="txt_shake_ingredient_text">Ingredient</string>
-    <string name="search_btn_text_add">ADD</string>
-    <string name="search_btn_text_remove">REMOVE</string>
+
     <string name="txt_database_success">Successfully cached to database!</string>
     <string name="txt_database_error">Error caching data to database :(</string>
     <string name="txt_favourites_success">Successfully added to favourites!</string>
@@ -34,7 +17,7 @@
     <string name="txt_search_item_date">Date</string>
     <string name="txt_search_item_numbers">Numbers</string>
     <string name="txt_search_item_jackpot">£</string>
-    <string name="txt_status">Status:</string>
+    <string name="txt_status">Status: You are now signed in as %1$s. This will also become your Lotterify username.</string>
 
     <string name="txt_not_signed_in">Not signed in</string>
     <string name="txt_success">Successfully logged in user</string>
@@ -43,17 +26,23 @@
     <string name="txt_sign_out">Sign out</string>
     <string name="txt_sign_in">Sign in</string>
     <string name="txt_signed_out_user">Successfully signed out user:\u0020</string>
-    <string name="facebook_app_id">217709042809884</string>
-    <string name="fb_login_protocol_scheme">fb217709042809884</string>
     <string name="txt_cancelled_login">Cancelled!</string>
     <string name="txt_proceed">PROCEED</string>
     <string name="txt_please_sign_in">Please sign in with one of the following options</string>
-    <string name="txt_balance">Balance:</string>
+    <string name="txt_balance">Balance: %1$s %2$s</string>
     <string name="txt_deposit">DEPOSIT</string>
     <string name="txt_balance_number">0.00</string>
     <string name="txt_button_pay_p">Pay P</string>
     <string name="txt_enter_deposit_amount">Enter deposit amount</string>
     <string name="txt_email">email</string>
-    <string name="please_create">Please take a few seconds to create a Lotterify account...</string>
+    <string name="please_create">Please take a few seconds to create a Lotterify account…</string>
     <string name="txt_continue">CONTINUE</string>
+    <string name="txt_new_user_success">User %1$s created successfully! </string>
+    <string name="txt_sign_in_different">Use the button below to sign in a with a different account, or press CONTINUE</string>
+    <string name="txt_choose_currency">Please choose the currency to use from list below:</string>
+    <string name="eur">EUR</string>
+    <string name="gbp">GBP</string>
+    <string name="usd">USD</string>
+    <string name="txt_signed_in_account">Signed in account %1$s</string>
+    <string name="txt_finish">FINISH</string>
 </resources>

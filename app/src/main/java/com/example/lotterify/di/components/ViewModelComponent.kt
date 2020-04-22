@@ -1,7 +1,7 @@
 package com.example.lotterify.di.components
 
 import com.example.lotterify.di.modules.MainViewModelModule
-import com.example.lotterify.main.view.MainActivity
+import com.example.lotterify.MainActivity
 import dagger.Component
 
 @Component(modules = [MainViewModelModule::class], dependencies = [AppComponent::class])
