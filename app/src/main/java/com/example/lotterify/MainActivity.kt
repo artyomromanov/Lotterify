@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         createFragment(LoginFragment(model))
 
+        //Set UI State
         model.getUIStateData().observe(this, Observer {
             when(it){
                 UIState.ACCOUNT_CREATION_USERNAME -> { createLoginFragment(CreateAccountUsernameFragment(model)); enableTabs(false) }
@@ -75,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    //Dagger injection
     private fun initializeViewModel() {
         DaggerViewModelComponent
             .builder()
